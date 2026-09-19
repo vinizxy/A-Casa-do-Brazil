@@ -23,7 +23,8 @@ from PIL import Image, ImageOps
 
 ROOT = Path(__file__).resolve().parent.parent
 ALTA = ROOT / "jpg - alta"
-PRES = ROOT.parent / "CASA BRAZIL" / "extracted"
+# A pasta "CASA BRAZIL" (apresentação extraída) pode estar dentro do projeto ou ao lado dele.
+PRES = next((p for p in (ROOT / "CASA BRAZIL" / "extracted", ROOT.parent / "CASA BRAZIL" / "extracted") if p.exists()), ROOT / "CASA BRAZIL" / "extracted")
 SRC_WEB = ROOT / "assets" / "fotos"
 OUT = ROOT / "public" / "images" / "w"
 OG = ROOT / "public" / "og"

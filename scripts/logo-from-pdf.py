@@ -13,7 +13,7 @@ from pathlib import Path
 import pymupdf
 
 ROOT = Path(__file__).resolve().parent.parent
-PDF = ROOT.parent / "CASA BRAZIL" / "logo-casa-brazil.pdf"
+PDF = next((p for p in (ROOT / "CASA BRAZIL" / "logo-casa-brazil.pdf", ROOT.parent / "CASA BRAZIL" / "logo-casa-brazil.pdf") if p.exists()), ROOT / "CASA BRAZIL" / "logo-casa-brazil.pdf")
 OUT = ROOT / "components" / "brand" / "Logo.tsx"
 
 
