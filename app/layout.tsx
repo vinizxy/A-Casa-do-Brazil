@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Jost } from "next/font/google";
 import "./globals.css";
-import { restaurante } from "@/content/site";
+import Rastreamento from "@/components/Rastreamento";
+import { rastreamento, restaurante } from "@/content/site";
 
 // Fraunces: display editorial com eixos ópticos; Jost: corpo, navegação e legendas.
 // Ambas servidas pelo próprio site (next/font), sem requisições externas.
@@ -42,6 +43,8 @@ export const metadata: Metadata = {
     images: ["/og/casa-brazil.jpg"],
   },
   robots: { index: true, follow: true },
+  alternates: { canonical: "/" },
+  verification: rastreamento.googleSiteVerification ? { google: rastreamento.googleSiteVerification } : undefined,
 };
 
 export const viewport: Viewport = {
@@ -70,6 +73,14 @@ const jsonLd = {
     addressCountry: "BR",
   },
   sameAs: [restaurante.instagram.href],
+  // Horários conforme o perfil oficial (content/site.ts)
+  openingHoursSpecification: [
+    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Tuesday", "Wednesday", "Thursday", "Friday"], opens: "12:00", closes: "15:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Tuesday", "Wednesday", "Thursday", "Friday"], opens: "18:00", closes: "22:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "12:00", closes: "22:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Sunday", opens: "12:00", closes: "20:00" },
+  ],
+  founder: { "@type": "Person", name: "Diego Silva", jobTitle: "Cenógrafo, empresário e criador da Casa Brazil" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -88,6 +99,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Pular para o conteúdo
         </a>
         {children}
+        <Rastreamento />
       </body>
     </html>
   );

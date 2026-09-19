@@ -14,7 +14,9 @@ export const restaurante = {
   eyebrow: "Gastronomia brasileira contemporânea",
   descricao:
     "Uma experiência brasileira onde gastronomia, cenografia e arquitetura se encontram. Casa Brazil — gastronomia brasileira contemporânea no Parque Continental, São Paulo.",
-  url: "https://acasabrazil.com.br",
+  // URL pública atual. Quando o domínio próprio (acasabrazil.com.br) for
+  // conectado na Vercel, troque aqui: canonical, sitemap, OG e JSON-LD seguem.
+  url: "https://casa-brazil-nine.vercel.app",
   locale: "pt_BR",
   endereco: {
     rua: "Rua Eva Terpins, 8",
@@ -39,6 +41,16 @@ export const restaurante = {
     { dias: "Sábado", horas: "12h às 22h" },
     { dias: "Domingo", horas: "12h às 20h" },
   ],
+} as const;
+
+// Ferramentas de medição. Preencha com os IDs da sua conta; vazio = desligado.
+export const rastreamento = {
+  /** Google Analytics 4 — formato "G-XXXXXXXXXX" */
+  googleAnalyticsId: "",
+  /** Microsoft Clarity — ID do projeto (ex.: "abcd1234ef") */
+  microsoftClarityId: "",
+  /** Google Search Console — conteúdo da meta tag google-site-verification, se usar esse método */
+  googleSiteVerification: "",
 } as const;
 
 export const navegacao = [

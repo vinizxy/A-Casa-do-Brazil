@@ -9,7 +9,8 @@ import { restaurante } from "@/content/site";
 export const metadata: Metadata = {
   title: cardapioMeta.titulo,
   description: `Cardápio oficial da Casa Brazil — ${cardapioMeta.subtitulo.toLowerCase()}: entradas, saladas, pratos principais, pratos para duas pessoas, sobremesas, drinks e bebidas.`,
-  alternates: { canonical: "/cardapio" },
+  alternates: { canonical: "/cardapio/" },
+  openGraph: { title: `Cardápio — ${restaurante.nome}`, url: "/cardapio/" },
 };
 
 function Preco({ valor }: { valor: number }) {
@@ -43,12 +44,39 @@ function Item({ item }: { item: ItemCardapio }) {
 
 // Cardápio web editorial: categorias claras, leitura rápida, preços alinhados.
 // Conteúdo 100% do PDF oficial (content/cardapio.ts).
+// Schema.org Menu: cada categoria vira uma MenuSection e cada item um MenuItem
+// com oferta em BRL — o Google lê o cardápio direto da página.
+const menuJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Menu",
+  name: `Cardápio — ${restaurante.nome}`,
+  url: `${restaurante.url}/cardapio/`,
+  inLanguage: "pt-BR",
+  hasMenuSection: cardapio.map((categoria) => ({
+    "@type": "MenuSection",
+    name: categoria.nome,
+    ...(categoria.intro ? { description: categoria.intro } : {}),
+    hasMenuItem: categoria.itens.map((item) => ({
+      "@type": "MenuItem",
+      name: item.nome,
+      ...(item.descricao ? { description: item.descricao } : {}),
+      offers: (item.precos ?? [{ rotulo: "", preco: item.preco ?? 0 }]).map((p) => ({
+        "@type": "Offer",
+        price: p.preco.toFixed(2),
+        priceCurrency: "BRL",
+        ...(p.rotulo ? { name: p.rotulo } : {}),
+      })),
+    })),
+  })),
+};
+
 export default function CardapioPage() {
   const categorias = cardapio.map((c) => ({ id: c.id, nome: c.nome }));
 
   return (
     <>
       <Nav modo="solido" />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(menuJsonLd) }} />
       <main id="conteudo" className="bg-nevoa">
         <header className="tema-escuro bg-profundo pb-14 pt-[calc(var(--nav-h)+3rem)] text-nevoa lg:pb-20 lg:pt-[calc(var(--nav-h)+5rem)]">
           <div className="container-editorial">

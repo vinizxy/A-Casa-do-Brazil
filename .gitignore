@@ -45,3 +45,11 @@ next-env.d.ts
 /WhatsApp Image*
 /Screenshot*
 /*.pdf
+
+# arquivos que vivem nesta pasta mas não pertencem ao site
+/CASA BRAZIL/
+/_extraido-estatico/
+/Alinhamento.TXT
+/skills-lock.json
+/dev-hangar.cmd
+/*.zip

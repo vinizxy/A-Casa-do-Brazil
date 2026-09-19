@@ -1,0 +1,27 @@
+# Casa Brazil — Gastronomia brasileira contemporânea
+
+> Restaurante de cozinha brasileira contemporânea no Parque Continental, São Paulo (SP).
+> "Uma experiência brasileira onde gastronomia, cenografia e arquitetura se encontram."
+
+## Sobre
+A Casa Brazil nasceu do desejo de transformar a riqueza da cultura brasileira em uma experiência
+que pudesse ser vivida à mesa. É uma casa de gastronomia brasileira contemporânea que valoriza
+sabores, ingredientes, histórias e tradições do país. Gastronomia, cenografia e arquitetura
+caminham juntas: ambiente, materiais, objetos, música e a forma de receber fazem parte de uma
+mesma narrativa. Criada por Diego Silva, cenógrafo e empresário com mais de 18 anos de trajetória.
+
+## Páginas
+- [Início](https://casa-brazil-nine.vercel.app/): história, gastronomia, Um País Muitos Brasis, o espaço, Diego Silva, galeria e localização.
+- [Cardápio](https://casa-brazil-nine.vercel.app/cardapio/): cardápio oficial completo — entradas e petiscos, saladas, pratos principais, vegetariano, vegano, acréscimos, pratos para duas pessoas, sobremesas, buffet de feijoada aos sábados, drinks e bebidas, com preços.
+
+## Contato
+- Endereço: Rua Eva Terpins, 8 — Parque Continental, São Paulo — SP, 05327-030
+- Telefone / WhatsApp: (11) 94107-4859
+- E-mail: contatoacasabrazil@gmail.com
+- Instagram: @acasabrazil
+
+## Horários
+- Segunda: fechado
+- Terça a sexta: 12h às 15h e 18h às 22h
+- Sábado: 12h às 22h
+- Domingo: 12h às 20h
