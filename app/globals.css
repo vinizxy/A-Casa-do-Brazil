@@ -1,0 +1,316 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   CASA BRAZIL — DESIGN TOKENS
+   Paleta oficial (única fonte de cor do projeto). Qualquer outro tom é
+   derivado daqui por color-mix e documentado abaixo.
+   --------------------------------------------------------------------------- */
+:root {
+  /* Paleta oficial */
+  --verde-profundo: #454b30;
+  --verde: #788464;
+  --salvia: #a7ad91;
+  --nevoa: #ebefe3;
+  --creme: #ebd8c0;
+
+  /* Derivações (texto, hairlines, materiais) */
+  --tinta: var(--verde-profundo);
+  /* Texto secundário em fundo claro: entre o profundo e o verde, ≥ 4.5:1 sobre névoa e creme */
+  --tinta-suave: color-mix(in oklab, var(--verde-profundo) 72%, var(--verde));
+  /* Texto secundário em fundo escuro */
+  --nevoa-suave: color-mix(in oklab, var(--nevoa) 78%, var(--salvia));
+  --hairline-claro: color-mix(in oklab, var(--verde-profundo) 16%, transparent);
+  --hairline-escuro: color-mix(in oklab, var(--salvia) 28%, transparent);
+  /* Material translúcido da navbar sobre fotografia */
+  --material-escuro: color-mix(in oklab, var(--verde-profundo) 82%, transparent);
+
+  /* Layout */
+  --gutter: clamp(1.25rem, 5vw, 4.5rem);
+  --container: 90rem;
+  --nav-h: 4.25rem;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-micro: 180ms;
+  --dur-ui: 320ms;
+  --dur-editorial: 700ms;
+}
+
+@theme inline {
+  --color-profundo: var(--verde-profundo);
+  --color-verde: var(--verde);
+  --color-salvia: var(--salvia);
+  --color-nevoa: var(--nevoa);
+  --color-creme: var(--creme);
+  --color-tinta: var(--tinta);
+  --color-tinta-suave: var(--tinta-suave);
+  --color-nevoa-suave: var(--nevoa-suave);
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-jost);
+  --breakpoint-xs: 26.875rem; /* 430px */
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-h);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Toque: sem atraso de duplo-toque e sem o realce padrão do WebKit (os
+   estados de hover/active/focus já dão o feedback). */
+a,
+button,
+summary {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--nevoa);
+  color: var(--tinta);
+  font-family: var(--font-jost), system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--verde);
+  color: var(--nevoa);
+}
+
+/* Foco visível com contraste em qualquer fundo: anel claro em fundo escuro
+   e escuro em fundo claro (as seções escuras definem --focus). */
+:root {
+  --focus: var(--verde-profundo);
+}
+.tema-escuro {
+  --focus: var(--nevoa);
+  --tinta: var(--nevoa);
+  --tinta-suave: var(--nevoa-suave);
+  color: var(--nevoa);
+}
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+
+/* Tipografia de display: Fraunces com eixo SOFT levemente aberto. O tamanho
+   óptico segue o font-size (font-optical-sizing: auto). */
+.display {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-variation-settings: "SOFT" 40;
+  font-optical-sizing: auto;
+  font-weight: 340;
+  letter-spacing: -0.012em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+.display-italic {
+  font-style: italic;
+  font-weight: 300;
+}
+.display-xl {
+  font-size: clamp(2.75rem, 1.4rem + 5.4vw, 6.75rem);
+}
+.display-lg {
+  font-size: clamp(2.25rem, 1.3rem + 3.6vw, 4.75rem);
+  line-height: 1.04;
+}
+.display-md {
+  font-size: clamp(1.75rem, 1.15rem + 2.1vw, 3rem);
+  line-height: 1.1;
+}
+.display-sm {
+  font-size: clamp(1.375rem, 1.1rem + 1vw, 1.875rem);
+  line-height: 1.2;
+}
+.prose-editorial {
+  max-width: 62ch;
+}
+.prose-editorial p + p {
+  margin-top: 1.1em;
+}
+
+/* Container editorial e sangria total */
+.container-editorial {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Hairlines coerentes com a paleta */
+.hairline {
+  border-color: var(--hairline-claro);
+}
+.tema-escuro .hairline {
+  border-color: var(--hairline-escuro);
+}
+
+/* Fotografias: radius zero por padrão; o fundo reserva espaço enquanto carrega */
+.foto {
+  display: block;
+  background: color-mix(in oklab, var(--salvia) 35%, var(--nevoa));
+}
+.tema-escuro .foto {
+  background: color-mix(in oklab, var(--verde) 40%, var(--verde-profundo));
+}
+
+/* Link editorial: sublinhado fino que se completa no hover */
+.link-editorial {
+  position: relative;
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  transition: background-size var(--dur-ui) var(--ease-out);
+  padding-bottom: 0.1em;
+}
+.link-editorial:hover,
+.link-editorial:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* Botão discreto (contorno) */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 1.25rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  font-size: 0.9375rem;
+  letter-spacing: 0.01em;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out),
+    transform var(--dur-micro) var(--ease-out);
+  cursor: pointer;
+}
+.botao:hover {
+  background: var(--tinta);
+  color: var(--nevoa);
+}
+.tema-escuro .botao:hover {
+  background: var(--nevoa);
+  color: var(--verde-profundo);
+}
+.botao:active {
+  transform: translateY(1px);
+}
+
+/* ---------------------------------------------------------------------------
+   Motion — uma sequência orquestrada no hero e entrada suave (só opacidade)
+   nas fotografias. Tudo desligado em prefers-reduced-motion.
+   --------------------------------------------------------------------------- */
+@keyframes hero-texto {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes hero-foto {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes hero-foto-mobile {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.hero-texto > * {
+  animation: hero-texto 640ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 90ms + 420ms);
+}
+.hero-foto {
+  animation: hero-foto-mobile 900ms var(--ease-out) both;
+}
+@media (min-width: 64rem) {
+  .hero-foto {
+    animation-name: hero-foto;
+  }
+}
+
+/* Só esconde quando há JS (html.js é definido antes da primeira pintura);
+   sem JS o conteúdo nasce visível. */
+.js .entra {
+  opacity: 0;
+  transition: opacity var(--dur-editorial) var(--ease-out);
+}
+.js .entra.visivel {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .hero-texto > *,
+  .hero-foto {
+    animation: none;
+  }
+  .js .entra {
+    opacity: 1;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Sem backdrop-filter, a navbar usa o material mais opaco */
+@supports not (backdrop-filter: blur(1px)) {
+  .navbar-material {
+    background: color-mix(in oklab, var(--verde-profundo) 96%, transparent) !important;
+  }
+}
+
+/* Sem barra de rolagem visível nas faixas horizontais (o scroll continua) */
+.sem-scrollbar {
+  scrollbar-width: none;
+}
+.sem-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Lightbox */
+dialog.lightbox {
+  border: 0;
+  padding: 0;
+  max-width: 100vw;
+  max-height: 100dvh;
+  width: 100vw;
+  height: 100dvh;
+  overscroll-behavior: contain;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: color-mix(in oklab, var(--verde-profundo) 96%, black);
+  color: var(--nevoa);
+}
+dialog.lightbox::backdrop {
+  background: color-mix(in oklab, var(--verde-profundo) 70%, black);
+}
+body:has(dialog.lightbox[open]) {
+  overflow: hidden;
+}
