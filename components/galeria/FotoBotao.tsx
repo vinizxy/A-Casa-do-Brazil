@@ -28,10 +28,10 @@ export default function FotoBotao({ id, sizes, recorte, className = "", quality 
       type="button"
       onClick={() => abrir(id, ref.current)}
       aria-label={`Ampliar: ${f.alt}`}
-      className={`foto group block w-full cursor-zoom-in text-left transition-opacity duration-200 hover:opacity-90 ${recorte ? `relative overflow-hidden ${recorte}` : ""} ${className}`}
+      className={`foto grupo-foto relative block w-full cursor-zoom-in overflow-hidden text-left ${recorte ?? ""} ${className}`}
     >
       {recorte ? (
-        <Image src={f.src} alt={f.alt} fill sizes={sizes} quality={quality} className="object-cover" />
+        <Image src={f.src} alt={f.alt} fill sizes={sizes} quality={quality} className="foto-zoom object-cover" />
       ) : (
         <Image
           src={f.src}
@@ -40,7 +40,7 @@ export default function FotoBotao({ id, sizes, recorte, className = "", quality 
           height={f.height}
           sizes={sizes}
           quality={quality}
-          className="block h-auto w-full"
+          className="foto-zoom block h-auto w-full"
         />
       )}
     </button>

@@ -81,15 +81,24 @@ export const galeria: GaleriaCapitulo[] = [
   },
 ];
 
+/** Fotos de um bloco, na ordem em que aparecem nele. */
+function fotosDoBloco(bloco: GaleriaBloco): FotoKey[] {
+  if (bloco.tipo === "pair") return [...bloco.fotos];
+  if (bloco.tipo === "trio") return [bloco.grande, ...bloco.pequenas];
+  return [bloco.foto];
+}
+
 /** Todas as fotos da galeria, na ordem em que aparecem (usado pelo lightbox). */
 export function fotosDaGaleria(): FotoKey[] {
-  const keys: FotoKey[] = [];
-  for (const capitulo of galeria) {
-    for (const bloco of capitulo.blocos) {
-      if (bloco.tipo === "pair") keys.push(...bloco.fotos);
-      else if (bloco.tipo === "trio") keys.push(bloco.grande, ...bloco.pequenas);
-      else keys.push(bloco.foto);
-    }
-  }
-  return keys;
+  return galeria.flatMap((capitulo) => capitulo.blocos.flatMap(fotosDoBloco));
+}
+
+/**
+ * Título do capítulo de cada foto, no mesmo índice de fotosDaGaleria() — as
+ * duas listas percorrem a mesma estrutura, então não saem de sincronia.
+ */
+export function capitulosDasFotos(): string[] {
+  return galeria.flatMap((capitulo) =>
+    capitulo.blocos.flatMap((bloco) => fotosDoBloco(bloco).map(() => capitulo.titulo)),
+  );
 }

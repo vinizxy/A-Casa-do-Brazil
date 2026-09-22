@@ -2,11 +2,11 @@ import Entra from "../Entra";
 import FotoBotao from "./FotoBotao";
 import GaleriaProvider from "./GaleriaProvider";
 import { foto } from "@/content/fotos";
-import { fotosDaGaleria, galeria, type GaleriaBloco, type GaleriaCapitulo } from "@/content/galeria";
+import { capitulosDasFotos, fotosDaGaleria, galeria, type GaleriaBloco } from "@/content/galeria";
 
 const fundos = ["bg-nevoa", "bg-creme", "bg-nevoa"] as const;
 
-function Bloco({ bloco, capitulo }: { bloco: GaleriaBloco; capitulo: GaleriaCapitulo }) {
+function Bloco({ bloco }: { bloco: GaleriaBloco }) {
   switch (bloco.tipo) {
     case "full": {
       const f = foto(bloco.foto);
@@ -40,30 +40,20 @@ function Bloco({ bloco, capitulo }: { bloco: GaleriaBloco; capitulo: GaleriaCapi
         <div className="container-editorial py-6 lg:py-16">
           <Entra
             as="figure"
-            className={`w-[66%] sm:w-[48%] lg:w-[34%] ${bloco.lado === "direita" ? "ml-auto" : ""}`}
+            className={`w-[78%] sm:w-[52%] lg:w-[34%] ${bloco.lado === "direita" ? "ml-auto" : ""}`}
           >
-            <FotoBotao id={bloco.foto} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 48vw, 66vw" quality={70} />
+            <FotoBotao id={bloco.foto} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 52vw, 78vw" quality={70} />
           </Entra>
         </div>
       );
     case "tall":
+      // Vertical grande, encostada numa das margens: o silêncio ao lado é o
+      // próprio bloco. (A frase do capítulo agora abre o capítulo.)
       return (
         <div className="container-editorial">
-          <div className="grid grid-cols-1 items-end gap-y-6 lg:grid-cols-12 lg:gap-x-12">
-            <Entra
-              as="figure"
-              className={`lg:col-span-6 ${bloco.lado === "direita" ? "lg:col-start-7 lg:row-start-1" : "lg:col-start-1"}`}
-            >
-              <FotoBotao id={bloco.foto} sizes="(min-width: 1024px) 44vw, 100vw" />
-            </Entra>
-            <p
-              className={`display display-md display-italic max-w-[16ch] lg:col-span-4 lg:pb-4 ${
-                bloco.lado === "direita" ? "lg:col-start-2 lg:row-start-1" : "lg:col-start-8"
-              }`}
-            >
-              {capitulo.deck}
-            </p>
-          </div>
+          <Entra as="figure" className={`w-full lg:w-[58%] ${bloco.lado === "direita" ? "lg:ml-auto" : ""}`}>
+            <FotoBotao id={bloco.foto} sizes="(min-width: 1024px) 58vw, 100vw" />
+          </Entra>
         </div>
       );
     case "trio":
@@ -86,26 +76,40 @@ function Bloco({ bloco, capitulo }: { bloco: GaleriaBloco; capitulo: GaleriaCapi
   }
 }
 
-// Galeria editorial: capítulos que se sucedem pelo scroll, cada um com um
-// microtítulo e blocos de escalas diferentes. Todas as imagens abrem o
-// lightbox (mouse, toque, teclado) e carregam sob demanda.
+// Galeria editorial: capítulos que se sucedem pelo scroll, cada um aberto pelo
+// título e pela sua frase, seguidos de blocos em escalas diferentes. Todas as
+// imagens abrem o lightbox (mouse, toque, teclado) e carregam sob demanda.
 export default function Galeria() {
   const fotos = fotosDaGaleria();
+  const capitulos = capitulosDasFotos();
 
   return (
-    <GaleriaProvider fotos={fotos}>
+    <GaleriaProvider fotos={fotos} capitulos={capitulos}>
       <section id="galeria" aria-labelledby="galeria-titulo" className="scroll-mt-[var(--nav-h)]">
         <h2 id="galeria-titulo" className="sr-only">
           Galeria
         </h2>
         {galeria.map((capitulo, i) => (
-          <div key={capitulo.id} id={capitulo.id} className={`${fundos[i % fundos.length]} pb-24 pt-16 lg:pb-40 lg:pt-24`}>
-            <div className="container-editorial mb-10 lg:mb-16">
-              <h3 className="hairline display border-t pt-4 text-[1.375rem] text-tinta">{capitulo.titulo}</h3>
+          // O prefixo evita colidir com as âncoras das seções da página
+          // (o capítulo "a-casa" x a seção #a-casa de Quem somos).
+          <div
+            key={capitulo.id}
+            id={`galeria-${capitulo.id}`}
+            className={`${fundos[i % fundos.length]} scroll-mt-[var(--nav-h)] pb-24 pt-16 lg:pb-40 lg:pt-24`}
+          >
+            {/* Abertura do capítulo: título na escala das outras seções da página,
+                com a frase do capítulo ao lado — é aqui que o deck pertence. */}
+            <div className="container-editorial mb-14 lg:mb-24">
+              <div className="hairline grid grid-cols-1 gap-y-4 border-t pt-6 lg:grid-cols-12 lg:gap-x-12 lg:pt-8">
+                <h3 className="display display-lg text-tinta lg:col-span-6">{capitulo.titulo}</h3>
+                <p className="display display-sm display-italic max-w-[22ch] text-tinta-suave lg:col-span-5 lg:col-start-8 lg:self-end lg:pb-2">
+                  {capitulo.deck}
+                </p>
+              </div>
             </div>
             <div className="space-y-14 lg:space-y-24">
               {capitulo.blocos.map((bloco, j) => (
-                <Bloco key={`${capitulo.id}-${j}`} bloco={bloco} capitulo={capitulo} />
+                <Bloco key={`${capitulo.id}-${j}`} bloco={bloco} />
               ))}
             </div>
           </div>

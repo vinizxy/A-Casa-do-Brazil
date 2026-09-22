@@ -160,6 +160,23 @@ body {
   background: color-mix(in oklab, var(--verde) 40%, var(--verde-profundo));
 }
 
+/* Fotografia que abre o lightbox: aproximação lenta dentro do próprio quadro.
+   É o único gesto de hover da galeria — diz "isto abre" sem enfeitar a foto.
+   O quadro precisa de overflow: hidden (ver FotoBotao). */
+.foto-zoom {
+  transition: transform var(--dur-editorial) var(--ease-out);
+}
+.grupo-foto:hover .foto-zoom,
+.grupo-foto:focus-visible .foto-zoom {
+  transform: scale(1.035);
+}
+@media (prefers-reduced-motion: reduce) {
+  .grupo-foto:hover .foto-zoom,
+  .grupo-foto:focus-visible .foto-zoom {
+    transform: none;
+  }
+}
+
 /* Link editorial: sublinhado fino que se completa no hover */
 .link-editorial {
   position: relative;

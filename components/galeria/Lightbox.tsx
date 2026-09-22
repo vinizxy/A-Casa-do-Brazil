@@ -7,6 +7,8 @@ import Seta from "../Seta";
 
 type Props = {
   fotos: FotoKey[];
+  /** Título do capítulo de cada foto, no mesmo índice de `fotos`. */
+  capitulos: string[];
   indice: number | null;
   onMudar: (i: number) => void;
   onFechar: () => void;
@@ -15,7 +17,7 @@ type Props = {
 // Lightbox com <dialog> nativo: foco preso, Escape e backdrop vêm do
 // navegador; setas do teclado, swipe e botões vêm daqui. Em telas pequenas o
 // botão de fechar fica no topo, sempre visível.
-export default function Lightbox({ fotos, indice, onMudar, onFechar }: Props) {
+export default function Lightbox({ fotos, capitulos, indice, onMudar, onFechar }: Props) {
   const ref = useRef<HTMLDialogElement | null>(null);
   const toque = useRef<{ x: number; y: number } | null>(null);
   const aberto = indice !== null;
@@ -58,6 +60,7 @@ export default function Lightbox({ fotos, indice, onMudar, onFechar }: Props) {
   }
 
   const atual = foto(fotos[indice]);
+  const capitulo = capitulos[indice];
 
   return (
     <dialog
@@ -116,11 +119,15 @@ export default function Lightbox({ fotos, indice, onMudar, onFechar }: Props) {
               sizes="100vw"
               quality={85}
               className="object-contain"
-              priority
+              loading="eager"
             />
           </div>
-          <figcaption className="shrink-0 px-2 pb-1 pt-3 text-center text-[0.875rem] leading-snug text-nevoa/70 sm:px-0">
-            {atual.alt}
+          {/* O capítulo situa a foto; a descrição abaixo é a mesma do alt. */}
+          <figcaption className="shrink-0 px-2 pb-1 pt-4 text-center sm:px-0">
+            <span className="block text-[0.8125rem] text-nevoa/55">{capitulo}</span>
+            <span className="mx-auto mt-1 block max-w-[56ch] text-[0.875rem] leading-snug text-nevoa/75">
+              {atual.alt}
+            </span>
           </figcaption>
         </figure>
 
