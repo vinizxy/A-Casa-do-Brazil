@@ -12,6 +12,7 @@ type NavProps = {
 export default function Nav({ modo = "sobre-foto" }: NavProps) {
   const [rolou, setRolou] = useState(false);
   const [aberto, setAberto] = useState(false);
+  const [atual, setAtual] = useState<string | null>(null);
   const botaoRef = useRef<HTMLButtonElement | null>(null);
   const painelRef = useRef<HTMLDivElement | null>(null);
   const menuId = useId();
@@ -21,6 +22,35 @@ export default function Nav({ modo = "sobre-foto" }: NavProps) {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Seção atual: no cardápio, o próprio link; na home, a última seção do menu
+  // cujo topo já passou do meio da tela (as seções entre elas herdam a anterior).
+  useEffect(() => {
+    let quadro = 0;
+    const medir = () => {
+      quadro = 0;
+      if (window.location.pathname.startsWith("/cardapio")) {
+        setAtual("/cardapio/");
+        return;
+      }
+      let achado: string | null = null;
+      for (const item of navegacao) {
+        const id = item.href.split("#")[1];
+        const el = id ? document.getElementById(id) : null;
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) achado = item.href;
+      }
+      setAtual(achado);
+    };
+    const onScroll = () => {
+      if (!quadro) quadro = requestAnimationFrame(medir);
+    };
+    medir();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (quadro) cancelAnimationFrame(quadro);
+    };
   }, []);
 
   const fechar = useCallback(() => {
@@ -91,7 +121,13 @@ export default function Nav({ modo = "sobre-foto" }: NavProps) {
             <ul className="flex items-center gap-8">
               {navegacao.map((item) => (
                 <li key={item.href}>
-                  <a href={item.href} className="link-editorial text-[0.9375rem] text-nevoa/90 hover:text-nevoa">
+                  <a
+                    href={item.href}
+                    aria-current={atual === item.href ? "location" : undefined}
+                    className={`link-editorial text-[0.9375rem] hover:text-nevoa ${
+                      atual === item.href ? "link-editorial-ativo text-nevoa" : "text-nevoa/90"
+                    }`}
+                  >
                     {item.label}
                   </a>
                 </li>
@@ -138,7 +174,10 @@ export default function Nav({ modo = "sobre-foto" }: NavProps) {
                 <a
                   href={item.href}
                   onClick={() => setAberto(false)}
-                  className="display display-sm flex min-h-14 items-center py-3 text-nevoa"
+                  aria-current={atual === item.href ? "location" : undefined}
+                  className={`display display-sm flex min-h-14 items-center py-3 ${
+                    atual === item.href ? "display-italic text-nevoa" : "text-nevoa/85"
+                  }`}
                 >
                   {item.label}
                 </a>

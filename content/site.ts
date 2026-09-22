@@ -169,7 +169,12 @@ export const localizacao = {
   frase: "Uma casa brasileira criada para receber, alimentar e contar histórias.",
   titulo: "Onde estamos",
   cta: { label: "Como chegar", href: restaurante.endereco.rotaHref },
-  mapa: { abrir: "Ver o mapa", titulo: "Mapa — Casa Brazil, Rua Eva Terpins, 8, Parque Continental" },
+  mapa: {
+    abrir: "Ver o mapa",
+    titulo: "Mapa — Casa Brazil, Rua Eva Terpins, 8, Parque Continental",
+    // Capa enquanto o mapa não é aberto (foto fora da galeria, sem repetição).
+    capa: "casa/pratos-parede",
+  },
 } as const;
 
 export const rodape = {

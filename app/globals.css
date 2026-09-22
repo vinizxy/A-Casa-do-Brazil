@@ -193,13 +193,16 @@ body {
     transform var(--dur-micro) var(--ease-out);
   cursor: pointer;
 }
-.botao:hover {
-  background: var(--tinta);
-  color: var(--nevoa);
-}
-.tema-escuro .botao:hover {
-  background: var(--nevoa);
-  color: var(--verde-profundo);
+/* Hover só com mouse: no toque o estado ficaria preso depois do tap. */
+@media (hover: hover) {
+  .botao:hover {
+    background: var(--tinta);
+    color: var(--nevoa);
+  }
+  .tema-escuro .botao:hover {
+    background: var(--nevoa);
+    color: var(--verde-profundo);
+  }
 }
 .botao:active {
   transform: translateY(1px);
@@ -294,7 +297,95 @@ body {
   display: none;
 }
 
+/* ---------------------------------------------------------------------------
+   Galeria — linhas justificadas. Cada célula cresce na proporção (--ar) da
+   foto a partir de base zero, então todas as células de uma linha têm a mesma
+   altura e a linha fecha exatamente na largura, sem recorte nem vazio.
+   --------------------------------------------------------------------------- */
+.galeria-capitulo {
+  --galeria-gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--galeria-gap);
+}
+@media (min-width: 40rem) {
+  .galeria-capitulo {
+    --galeria-gap: 0.875rem;
+  }
+}
+@media (min-width: 64rem) {
+  .galeria-capitulo {
+    --galeria-gap: 1.125rem;
+  }
+}
+.galeria-linha-interna {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--galeria-gap);
+  /* Teto de altura no desktop: a linha nunca passa de ~78% da tela. */
+  max-width: calc(78svh * var(--soma) + (var(--n) - 1) * var(--galeria-gap));
+  margin-inline: auto;
+}
+.galeria-celula {
+  flex: var(--ar) 1 0%;
+  aspect-ratio: var(--ar);
+  min-width: 0;
+}
+.galeria-pilha {
+  display: flex;
+  flex-direction: column;
+  gap: var(--galeria-gap);
+}
+/* Celular: em linhas de três ou mais, a primeira foto abre em largura total. */
+@media (max-width: 39.99rem) {
+  .galeria-linha-interna[data-abre] > .galeria-celula:first-child {
+    flex-basis: 100%;
+  }
+}
+/* Sangria: borda a borda, na proporção da foto, com teto de altura. */
+.galeria-sangria {
+  width: 100%;
+  aspect-ratio: var(--ar);
+  max-height: 84svh;
+}
+@media (max-width: 39.99rem) {
+  .galeria-sangria {
+    aspect-ratio: 4 / 3;
+  }
+}
+/* Hover: aproximação lenta da foto dentro do recorte (sem mexer no layout). */
+.galeria-foto img {
+  transition: transform 900ms var(--ease-out);
+}
+@media (hover: hover) {
+  .galeria-foto:hover img {
+    transform: scale(1.03);
+  }
+}
+
+/* Link editorial marcado como atual (índice da galeria, navbar) */
+.link-editorial-ativo {
+  background-size: 100% 1px;
+}
+
 /* Lightbox */
+@keyframes lb-abre {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes lb-foto {
+  from {
+    opacity: 0;
+    transform: translateX(var(--dx, 0)) scale(0.99);
+  }
+}
+dialog.lightbox[open] {
+  animation: lb-abre 240ms var(--ease-out);
+}
+.lb-foto {
+  animation: lb-foto 420ms var(--ease-out) both;
+}
 dialog.lightbox {
   border: 0;
   padding: 0;

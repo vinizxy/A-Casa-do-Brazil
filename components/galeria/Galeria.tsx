@@ -1,115 +1,129 @@
 import Entra from "../Entra";
 import FotoBotao from "./FotoBotao";
+import GaleriaCapitulos from "./GaleriaCapitulos";
 import GaleriaProvider from "./GaleriaProvider";
-import { foto } from "@/content/fotos";
-import { fotosDaGaleria, galeria, type GaleriaBloco, type GaleriaCapitulo } from "@/content/galeria";
+import {
+  fotosDaGaleria,
+  fotosDoCapitulo,
+  galeria,
+  proporcao,
+  type GaleriaCelula,
+  type GaleriaLinha,
+} from "@/content/galeria";
+import { cssVars } from "@/lib/css";
 
-const fundos = ["bg-nevoa", "bg-creme", "bg-nevoa"] as const;
+const pct = (n: number) => `${Math.max(1, Math.round(n * 100))}vw`;
 
-function Bloco({ bloco, capitulo }: { bloco: GaleriaBloco; capitulo: GaleriaCapitulo }) {
-  switch (bloco.tipo) {
-    case "full": {
-      const f = foto(bloco.foto);
-      const quadrada = Math.abs(f.width / f.height - 1) < 0.05;
-      return (
-        <Entra as="figure" className="w-full">
-          <FotoBotao
-            id={bloco.foto}
-            sizes="100vw"
-            quality={85}
-            recorte={quadrada ? "aspect-[4/5] sm:aspect-[4/3] lg:aspect-[16/9]" : undefined}
-          />
-        </Entra>
-      );
-    }
-    case "pair":
-      return (
-        <div className="container-editorial">
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:gap-8">
-            <Entra as="figure">
-              <FotoBotao id={bloco.fotos[0]} sizes="(min-width: 1024px) 40vw, 50vw" />
-            </Entra>
-            <Entra as="figure" className="mt-10 sm:mt-16 lg:mt-24">
-              <FotoBotao id={bloco.fotos[1]} sizes="(min-width: 1024px) 40vw, 50vw" />
-            </Entra>
-          </div>
-        </div>
-      );
-    case "solo":
-      return (
-        <div className="container-editorial py-6 lg:py-16">
-          <Entra
-            as="figure"
-            className={`w-[66%] sm:w-[48%] lg:w-[34%] ${bloco.lado === "direita" ? "ml-auto" : ""}`}
-          >
-            <FotoBotao id={bloco.foto} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 48vw, 66vw" quality={70} />
-          </Entra>
-        </div>
-      );
-    case "tall":
-      return (
-        <div className="container-editorial">
-          <div className="grid grid-cols-1 items-end gap-y-6 lg:grid-cols-12 lg:gap-x-12">
-            <Entra
-              as="figure"
-              className={`lg:col-span-6 ${bloco.lado === "direita" ? "lg:col-start-7 lg:row-start-1" : "lg:col-start-1"}`}
-            >
-              <FotoBotao id={bloco.foto} sizes="(min-width: 1024px) 44vw, 100vw" />
-            </Entra>
-            <p
-              className={`display display-md display-italic max-w-[16ch] lg:col-span-4 lg:pb-4 ${
-                bloco.lado === "direita" ? "lg:col-start-2 lg:row-start-1" : "lg:col-start-8"
-              }`}
-            >
-              {capitulo.deck}
-            </p>
-          </div>
-        </div>
-      );
-    case "trio":
-      return (
-        <div className="container-editorial">
-          <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-12 lg:gap-8">
-            <Entra as="figure" className="col-span-2 lg:col-span-7">
-              <FotoBotao id={bloco.grande} sizes="(min-width: 1024px) 50vw, 100vw" quality={85} />
-            </Entra>
-            <div className="col-span-2 grid grid-cols-2 gap-3 sm:gap-6 lg:col-span-4 lg:col-start-9 lg:grid-cols-1 lg:gap-8 lg:self-end">
-              {bloco.pequenas.map((p) => (
-                <Entra as="figure" key={p}>
-                  <FotoBotao id={p} sizes="(min-width: 1024px) 22vw, 50vw" quality={70} />
-                </Entra>
-              ))}
-            </div>
-          </div>
-        </div>
-      );
-  }
+// sizes de cada célula: no desktop a fração da linha; no celular, a primeira
+// célula de uma linha com três ou mais abre em largura total.
+function sizesDaCelula(linha: GaleriaLinha, i: number): string {
+  const ars = linha.celulas.map(proporcao);
+  const soma = ars.reduce((a, b) => a + b, 0);
+  const abre = linha.celulas.length >= 3;
+  const somaCelular = abre ? soma - ars[0] : soma;
+  const celular = abre && i === 0 ? 1 : ars[i] / somaCelular;
+  return `(min-width: 640px) ${pct((ars[i] / soma) * 0.94)}, ${pct(celular)}`;
 }
 
-// Galeria editorial: capítulos que se sucedem pelo scroll, cada um com um
-// microtítulo e blocos de escalas diferentes. Todas as imagens abrem o
-// lightbox (mouse, toque, teclado) e carregam sob demanda.
+function Celula({ celula, sizes }: { celula: GaleriaCelula; sizes: string }) {
+  const ar = proporcao(celula);
+  if (typeof celula === "string") {
+    return (
+      <div className="galeria-celula" style={cssVars({ "--ar": ar })}>
+        <FotoBotao id={celula} sizes={sizes} />
+      </div>
+    );
+  }
+  return (
+    <div className="galeria-celula galeria-pilha" style={cssVars({ "--ar": ar })}>
+      {celula.map((k) => (
+        <div key={k} className="min-h-0 flex-1">
+          <FotoBotao id={k} sizes={sizes} quality={70} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Linha({ linha }: { linha: GaleriaLinha }) {
+  const [primeira] = linha.celulas;
+  if (linha.sangria && typeof primeira === "string") {
+    return (
+      <Entra>
+        <div className="galeria-sangria" style={cssVars({ "--ar": proporcao(primeira) })}>
+          <FotoBotao id={primeira} sizes="100vw" quality={85} />
+        </div>
+      </Entra>
+    );
+  }
+  const soma = linha.celulas.reduce((acc, c) => acc + proporcao(c), 0);
+  return (
+    <div className="container-editorial">
+      <Entra>
+        <div
+          className="galeria-linha-interna"
+          data-abre={linha.celulas.length >= 3 ? "" : undefined}
+          style={cssVars({ "--soma": soma, "--n": linha.celulas.length })}
+        >
+          {linha.celulas.map((c, i) => (
+            <Celula key={typeof c === "string" ? c : c.join("+")} celula={c} sizes={sizesDaCelula(linha, i)} />
+          ))}
+        </div>
+      </Entra>
+    </div>
+  );
+}
+
+// Galeria editorial: abertura com o total, um índice de capítulos que gruda
+// sob a navbar e três capítulos em linhas justificadas. Todas as imagens
+// abrem o lightbox (mouse, toque, teclado) e carregam sob demanda.
 export default function Galeria() {
-  const fotos = fotosDaGaleria();
+  const itens = fotosDaGaleria();
+  const capitulos = galeria.map((c) => ({
+    id: c.id,
+    titulo: c.titulo,
+    fundo: c.fundo,
+    total: fotosDoCapitulo(c).length,
+  }));
 
   return (
-    <GaleriaProvider fotos={fotos}>
-      <section id="galeria" aria-labelledby="galeria-titulo" className="scroll-mt-[var(--nav-h)]">
-        <h2 id="galeria-titulo" className="sr-only">
-          Galeria
-        </h2>
-        {galeria.map((capitulo, i) => (
-          <div key={capitulo.id} id={capitulo.id} className={`${fundos[i % fundos.length]} pb-24 pt-16 lg:pb-40 lg:pt-24`}>
-            <div className="container-editorial mb-10 lg:mb-16">
-              <h3 className="hairline display border-t pt-4 text-[1.375rem] text-tinta">{capitulo.titulo}</h3>
+    <GaleriaProvider itens={itens}>
+      <section id="galeria" aria-labelledby="galeria-titulo" className="scroll-mt-[var(--nav-h)] bg-nevoa">
+        <div className="container-editorial grid grid-cols-1 gap-y-6 pb-12 pt-20 sm:pt-28 lg:grid-cols-12 lg:items-end lg:gap-x-12 lg:pb-16 lg:pt-36">
+          <h2 id="galeria-titulo" className="display display-xl lg:col-span-7">
+            Galeria
+          </h2>
+          <p className="max-w-[34ch] text-[1.0625rem] text-tinta-suave lg:col-span-4 lg:col-start-9 lg:pb-3">
+            {itens.length} fotografias em três capítulos: a casa, a mesa e os detalhes.
+          </p>
+        </div>
+
+        <GaleriaCapitulos capitulos={capitulos} />
+
+        {galeria.map((capitulo) => {
+          const terminaEmSangria = capitulo.linhas[capitulo.linhas.length - 1]?.sangria;
+          return (
+            <div
+              key={capitulo.id}
+              id={capitulo.id}
+              className={`scroll-mt-12 ${capitulo.fundo === "creme" ? "bg-creme" : "bg-nevoa"} pt-14 lg:pt-24 ${
+                terminaEmSangria ? "" : "pb-16 lg:pb-28"
+              }`}
+            >
+              <header className="container-editorial mb-8 grid grid-cols-1 gap-y-3 lg:mb-14 lg:grid-cols-12 lg:items-end lg:gap-x-12">
+                <h3 className="display display-lg lg:col-span-7">{capitulo.titulo}</h3>
+                <p className="display display-sm display-italic text-tinta-suave lg:col-span-4 lg:col-start-9 lg:pb-2">
+                  {capitulo.deck}
+                </p>
+              </header>
+              <div className="galeria-capitulo">
+                {capitulo.linhas.map((linha, j) => (
+                  <Linha key={`${capitulo.id}-${j}`} linha={linha} />
+                ))}
+              </div>
             </div>
-            <div className="space-y-14 lg:space-y-24">
-              {capitulo.blocos.map((bloco, j) => (
-                <Bloco key={`${capitulo.id}-${j}`} bloco={bloco} capitulo={capitulo} />
-              ))}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </section>
     </GaleriaProvider>
   );

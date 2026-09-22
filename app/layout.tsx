@@ -1,23 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Jost } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Rastreamento from "@/components/Rastreamento";
 import { rastreamento, restaurante } from "@/content/site";
 
 // Fraunces: display editorial com eixos ópticos; Jost: corpo, navegação e legendas.
-// Ambas servidas pelo próprio site (next/font), sem requisições externas.
-const fraunces = Fraunces({
+// Arquivos variáveis (subset latino) versionados em app/fonts: o build não
+// depende de acesso ao Google Fonts, então dev offline e produção são iguais.
+const fraunces = localFont({
   variable: "--font-fraunces",
-  subsets: ["latin"],
-  axes: ["opsz", "SOFT"],
-  style: ["normal", "italic"],
+  src: [
+    { path: "./fonts/fraunces-latin.woff2", style: "normal", weight: "100 900" },
+    { path: "./fonts/fraunces-italic-latin.woff2", style: "italic", weight: "100 900" },
+  ],
   display: "swap",
+  adjustFontFallback: "Times New Roman",
 });
 
-const jost = Jost({
+const jost = localFont({
   variable: "--font-jost",
-  subsets: ["latin"],
+  src: [{ path: "./fonts/jost-latin.woff2", style: "normal", weight: "100 900" }],
   display: "swap",
+  adjustFontFallback: "Arial",
 });
 
 export const metadata: Metadata = {

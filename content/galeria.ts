@@ -1,95 +1,103 @@
 // ---------------------------------------------------------------------------
 // GALERIA EDITORIAL
 //
-// A galeria é uma sequência de blocos com escalas diferentes, organizada em
-// capítulos que se sucedem pelo scroll (sem tabs). Cada bloco escolhe a
-// composição; as fotos vêm do registro em ./fotos.ts.
+// Três capítulos que se sucedem pelo scroll. Cada capítulo é uma sequência de
+// linhas justificadas: as fotos de uma linha dividem a largura na proporção
+// natural de cada uma, então todas ficam com a mesma altura, sem recorte e
+// sem vazios. O ritmo vem da combinação — três verticais, uma horizontal com
+// uma vertical, uma pilha de duas quadradas — e de uma sangria (foto de borda
+// a borda) por capítulo.
 //
-//   full  — uma foto de borda a borda (full bleed)
-//   pair  — duas fotos lado a lado, a segunda levemente deslocada
-//   solo  — uma foto pequena e isolada, com silêncio ao redor
-//   tall  — uma foto vertical grande, com o microtítulo do capítulo ao lado
-//   trio  — uma foto grande + duas pequenas empilhadas
+//   celula  — uma foto, ou uma pilha de duas fotos ([a, b]) na mesma coluna
+//   sangria — a linha tem uma única foto, de borda a borda da tela
+//
+// No celular, linhas com três ou mais células abrem a primeira em largura
+// total e justificam as demais abaixo.
+//
+// Curadoria: 33 fotos. Ficam de fora as que já aparecem em outras seções da
+// home (composição 1, queijo coalho, cactos no espelho) e as quase repetidas.
 // ---------------------------------------------------------------------------
 
-import type { FotoKey } from "./fotos";
+import { foto, type FotoKey } from "./fotos";
 
-export type GaleriaBloco =
-  | { tipo: "full"; foto: FotoKey; legenda?: string }
-  | { tipo: "pair"; fotos: [FotoKey, FotoKey] }
-  | { tipo: "solo"; foto: FotoKey; lado: "esquerda" | "direita" }
-  | { tipo: "tall"; foto: FotoKey; lado: "esquerda" | "direita" }
-  | { tipo: "trio"; grande: FotoKey; pequenas: [FotoKey, FotoKey] };
+export type GaleriaCelula = FotoKey | readonly [FotoKey, FotoKey];
+
+export type GaleriaLinha = {
+  celulas: readonly GaleriaCelula[];
+  sangria?: boolean;
+};
 
 export type GaleriaCapitulo = {
   id: string;
   titulo: string;
   deck: string;
-  blocos: GaleriaBloco[];
+  /** Fundo do capítulo (a mesa fica no creme, como a seção de gastronomia). */
+  fundo: "nevoa" | "creme";
+  linhas: readonly GaleriaLinha[];
 };
 
-export const galeria: GaleriaCapitulo[] = [
+export const galeria: readonly GaleriaCapitulo[] = [
   {
-    id: "a-casa",
+    id: "galeria-casa",
     titulo: "A casa",
     deck: "Arquitetura, cenografia e natureza.",
-    blocos: [
-      { tipo: "full", foto: "casa/pratos-sofa" },
-      { tipo: "pair", fotos: ["casa/entrada-interna", "casa/escada"] },
-      { tipo: "solo", foto: "casa/luminarias", lado: "direita" },
-      { tipo: "tall", foto: "casa/bar", lado: "esquerda" },
-      { tipo: "trio", grande: "casa/mesa-posta-logo", pequenas: ["casa/cadeiras", "casa/janela-trelica"] },
-      { tipo: "full", foto: "casa/rede-cactos" },
-      { tipo: "pair", fotos: ["casa/mezanino", "casa/flores-mesas"] },
-      { tipo: "full", foto: "casa/pratos-parede" },
-      { tipo: "solo", foto: "casa/portao-2", lado: "esquerda" },
+    fundo: "nevoa",
+    linhas: [
+      { celulas: ["casa/pratos-sofa"], sangria: true },
+      { celulas: ["casa/entrada-interna", "casa/escada", "casa/mesa-posta-logo"] },
+      { celulas: ["casa/luminarias", "casa/bar"] },
+      { celulas: ["casa/janela-trelica", "casa/mezanino", "casa/flores-mesas"] },
+      { celulas: ["casa/rede-cactos"], sangria: true },
     ],
   },
   {
-    id: "a-mesa",
+    id: "galeria-mesa",
     titulo: "À mesa",
     deck: "Pratos, drinks e sobremesas.",
-    blocos: [
-      { tipo: "full", foto: "mesa/composicao-1" },
-      { tipo: "trio", grande: "pratos/tilapia-assada", pequenas: ["pratos/pastel", "pratos/queijo-coalho"] },
-      { tipo: "pair", fotos: ["pratos/salada-quiche", "pratos/stinco"] },
-      { tipo: "solo", foto: "pratos/batata-frita", lado: "direita" },
-      { tipo: "pair", fotos: ["mesa/drink-aperol", "pratos/bolo-chocolate"] },
-      { tipo: "tall", foto: "mesa/mesa-posta", lado: "direita" },
-      { tipo: "trio", grande: "pratos/picanha", pequenas: ["pratos/peixe-empanado", "pratos/bolinho-arroz"] },
-      { tipo: "pair", fotos: ["pratos/berinjela", "pratos/mini-chef"] },
-      { tipo: "trio", grande: "mesa/composicao-2", pequenas: ["pratos/baiao", "pratos/medalhao"] },
-      { tipo: "pair", fotos: ["pratos/cocada-coco", "pratos/sobremesa-coco"] },
-      { tipo: "solo", foto: "pratos/sobremesa-caramelo", lado: "esquerda" },
-      { tipo: "trio", grande: "pratos/prato-carnes", pequenas: ["pratos/prato-glaceado", "pratos/prato-ovos"] },
-      { tipo: "full", foto: "detalhes/mesa-alto" },
+    fundo: "creme",
+    linhas: [
+      { celulas: ["mesa/composicao-2", ["pratos/tilapia-assada", "pratos/pastel"], "mesa/mesa-posta"] },
+      { celulas: ["pratos/picanha", "pratos/bolinho-arroz", "pratos/baiao"] },
+      { celulas: ["detalhes/mesa-alto"], sangria: true },
+      { celulas: ["mesa/drink-aperol", "pratos/medalhao", "pratos/prato-ovos"] },
+      { celulas: ["pratos/bolo-chocolate", "pratos/cocada-coco", "pratos/sobremesa-caramelo"] },
     ],
   },
   {
-    id: "detalhes",
+    id: "galeria-detalhes",
     titulo: "Detalhes",
     deck: "Matéria e memória.",
-    blocos: [
-      { tipo: "tall", foto: "detalhes/trelica", lado: "esquerda" },
-      { tipo: "trio", grande: "casa/vitrine", pequenas: ["detalhes/potes", "detalhes/cortina"] },
-      { tipo: "pair", fotos: ["detalhes/macrame-cactos", "detalhes/flores-secas"] },
-      { tipo: "solo", foto: "detalhes/cacto-neon", lado: "esquerda" },
-      { tipo: "pair", fotos: ["detalhes/cactos-espelho", "detalhes/arte-parede"] },
-      { tipo: "pair", fotos: ["detalhes/estante-livros", "detalhes/secas"] },
-      { tipo: "full", foto: "detalhes/bar-secas" },
+    fundo: "nevoa",
+    linhas: [
+      { celulas: ["detalhes/trelica", "casa/vitrine"] },
+      { celulas: ["detalhes/macrame-cactos", "detalhes/flores-secas", "detalhes/arte-parede"] },
+      { celulas: ["detalhes/cacto-neon", "detalhes/estante-livros", "detalhes/cortina"] },
+      { celulas: ["detalhes/bar-secas"], sangria: true },
     ],
   },
 ];
 
-/** Todas as fotos da galeria, na ordem em que aparecem (usado pelo lightbox). */
-export function fotosDaGaleria(): FotoKey[] {
-  const keys: FotoKey[] = [];
-  for (const capitulo of galeria) {
-    for (const bloco of capitulo.blocos) {
-      if (bloco.tipo === "pair") keys.push(...bloco.fotos);
-      else if (bloco.tipo === "trio") keys.push(bloco.grande, ...bloco.pequenas);
-      else keys.push(bloco.foto);
-    }
+/** Proporção (largura/altura) de uma célula; a pilha soma as alturas. */
+export function proporcao(celula: GaleriaCelula): number {
+  if (typeof celula === "string") {
+    const f = foto(celula);
+    return f.width / f.height;
   }
-  return keys;
+  const [a, b] = celula.map((k) => foto(k));
+  return 1 / (a.height / a.width + b.height / b.width);
+}
+
+/** Fotos de um capítulo, na ordem de leitura (linha, célula, pilha). */
+export function fotosDoCapitulo(capitulo: GaleriaCapitulo): FotoKey[] {
+  return capitulo.linhas.flatMap((linha) => linha.celulas.flatMap((c) => (typeof c === "string" ? [c] : [...c])));
+}
+
+export type GaleriaItem = { key: FotoKey; capitulo: string; posicao: number; total: number };
+
+/** Todas as fotos da galeria em ordem, com o capítulo e a posição dentro dele (usado pelo lightbox). */
+export function fotosDaGaleria(): GaleriaItem[] {
+  return galeria.flatMap((capitulo) => {
+    const keys = fotosDoCapitulo(capitulo);
+    return keys.map((key, i) => ({ key, capitulo: capitulo.titulo, posicao: i + 1, total: keys.length }));
+  });
 }

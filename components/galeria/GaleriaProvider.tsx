@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import type { FotoKey } from "@/content/fotos";
+import type { GaleriaItem } from "@/content/galeria";
 import Lightbox from "./Lightbox";
 
 type GaleriaContexto = {
@@ -16,22 +17,22 @@ export function useGaleria() {
   return ctx;
 }
 
-type Props = { fotos: FotoKey[]; children: ReactNode };
+type Props = { itens: GaleriaItem[]; children: ReactNode };
 
 // Guarda a ordem das fotos da galeria e controla o lightbox. O elemento que
 // abriu recebe o foco de volta ao fechar.
-export default function GaleriaProvider({ fotos, children }: Props) {
+export default function GaleriaProvider({ itens, children }: Props) {
   const [indice, setIndice] = useState<number | null>(null);
   const [origem, setOrigem] = useState<HTMLElement | null>(null);
 
   const abrir = useCallback(
     (key: FotoKey, el: HTMLElement | null) => {
-      const i = fotos.indexOf(key);
+      const i = itens.findIndex((item) => item.key === key);
       if (i === -1) return;
       setOrigem(el);
       setIndice(i);
     },
-    [fotos],
+    [itens],
   );
 
   const fechar = useCallback(() => {
@@ -44,7 +45,7 @@ export default function GaleriaProvider({ fotos, children }: Props) {
   return (
     <Contexto.Provider value={valor}>
       {children}
-      <Lightbox fotos={fotos} indice={indice} onMudar={setIndice} onFechar={fechar} />
+      <Lightbox itens={itens} indice={indice} onMudar={setIndice} onFechar={fechar} />
     </Contexto.Provider>
   );
 }

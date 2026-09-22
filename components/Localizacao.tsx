@@ -88,6 +88,7 @@ export default function Localizacao() {
             src={endereco.mapaEmbed}
             titulo={localizacao.mapa.titulo}
             rotulo={localizacao.mapa.abrir}
+            capa={localizacao.mapa.capa}
             endereco={enderecoLinha}
           />
         </div>
