@@ -79,12 +79,7 @@ function Linha({ linha }: { linha: GaleriaLinha }) {
 // abrem o lightbox (mouse, toque, teclado) e carregam sob demanda.
 export default function Galeria() {
   const itens = fotosDaGaleria();
-  const capitulos = galeria.map((c) => ({
-    id: c.id,
-    titulo: c.titulo,
-    fundo: c.fundo,
-    total: fotosDoCapitulo(c).length,
-  }));
+  const capitulos = galeria.map((c) => ({ id: c.id, titulo: c.titulo, total: fotosDoCapitulo(c).length }));
 
   return (
     <GaleriaProvider itens={itens}>
@@ -100,21 +95,18 @@ export default function Galeria() {
 
         <GaleriaCapitulos capitulos={capitulos} />
 
-        {galeria.map((capitulo) => {
-          const terminaEmSangria = capitulo.linhas[capitulo.linhas.length - 1]?.sangria;
-          return (
-            <div
-              key={capitulo.id}
-              id={capitulo.id}
-              className={`scroll-mt-12 ${capitulo.fundo === "creme" ? "bg-creme" : "bg-nevoa"} pt-14 lg:pt-24 ${
-                terminaEmSangria ? "" : "pb-16 lg:pb-28"
-              }`}
-            >
-              <header className="container-editorial mb-8 grid grid-cols-1 gap-y-3 lg:mb-14 lg:grid-cols-12 lg:items-end lg:gap-x-12">
-                <h3 className="display display-lg lg:col-span-7">{capitulo.titulo}</h3>
-                <p className="display display-sm display-italic text-tinta-suave lg:col-span-4 lg:col-start-9 lg:pb-2">
-                  {capitulo.deck}
-                </p>
+        {/* Capítulos: muito respiro acima do divisor e pouco abaixo, para o
+            título pertencer às fotos que vêm depois dele. */}
+        <div className="pb-28 lg:pb-44">
+          {galeria.map((capitulo) => (
+            <div key={capitulo.id} className="pt-24 lg:pt-40">
+              {/* A âncora fica no divisor (não no respiro acima dele): o índice
+                  leva direto ao título, logo abaixo da faixa fixa. */}
+              <header id={capitulo.id} className="container-editorial mb-7 scroll-mt-16 lg:mb-10">
+                <div className="hairline flex flex-col gap-1.5 border-t pt-5 sm:flex-row sm:items-baseline sm:gap-6 lg:pt-6">
+                  <h3 className="display text-[1.875rem] lg:text-[2.5rem]">{capitulo.titulo}</h3>
+                  <p className="text-[0.9375rem] text-tinta-suave">{capitulo.deck}</p>
+                </div>
               </header>
               <div className="galeria-capitulo">
                 {capitulo.linhas.map((linha, j) => (
@@ -122,8 +114,8 @@ export default function Galeria() {
                 ))}
               </div>
             </div>
-          );
-        })}
+          ))}
+        </div>
       </section>
     </GaleriaProvider>
   );

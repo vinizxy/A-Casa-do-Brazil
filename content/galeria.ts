@@ -6,7 +6,7 @@
 // natural de cada uma, então todas ficam com a mesma altura, sem recorte e
 // sem vazios. O ritmo vem da combinação — três verticais, uma horizontal com
 // uma vertical, uma pilha de duas quadradas — e de uma sangria (foto de borda
-// a borda) por capítulo.
+// a borda) no meio de cada capítulo.
 //
 //   celula  — uma foto, ou uma pilha de duas fotos ([a, b]) na mesma coluna
 //   sangria — a linha tem uma única foto, de borda a borda da tela
@@ -34,36 +34,35 @@ export type GaleriaCapitulo = {
   id: string;
   titulo: string;
   deck: string;
-  /** Fundo do capítulo (a mesa fica no creme, como a seção de gastronomia). */
-  fundo: "nevoa" | "creme";
   linhas: readonly GaleriaLinha[];
 };
 
+// Os capítulos se separam por espaço e tipografia (fundo único). Nenhum
+// capítulo começa nem termina em sangria: a foto de borda a borda fica no
+// meio, e as bordas do capítulo são linhas comuns — a transição respira.
 export const galeria: readonly GaleriaCapitulo[] = [
   {
     id: "galeria-casa",
     titulo: "A casa",
     deck: "Arquitetura, cenografia e natureza.",
-    fundo: "nevoa",
     linhas: [
-      { celulas: ["casa/pratos-sofa"], sangria: true },
       { celulas: ["casa/entrada-interna", "casa/escada", "casa/mesa-posta-logo"] },
-      { celulas: ["casa/luminarias", "casa/bar"] },
-      { celulas: ["casa/janela-trelica", "casa/mezanino", "casa/flores-mesas"] },
-      { celulas: ["casa/rede-cactos"], sangria: true },
+      { celulas: ["casa/pratos-sofa"], sangria: true },
+      { celulas: ["casa/rede-cactos", "casa/bar", "casa/mezanino"] },
+      { celulas: ["casa/janela-trelica", "casa/luminarias", "casa/flores-mesas"] },
     ],
   },
   {
     id: "galeria-mesa",
     titulo: "À mesa",
     deck: "Pratos, drinks e sobremesas.",
-    fundo: "creme",
-    // A refeição em ordem: a mesa, petiscos e drink, pratos principais,
-    // sobremesas. Nenhum prato repete (nem com a faixa da seção Gastronomia).
+    // Abre com um prato só (a composição cheia vem depois), segue pelos
+    // petiscos e principais e fecha nas sobremesas. Nenhum prato repete —
+    // nem com a faixa da seção Gastronomia.
     linhas: [
-      { celulas: ["mesa/composicao-2", ["pratos/tilapia-assada", "pratos/pastel"], "mesa/mesa-posta"] },
-      { celulas: ["pratos/peixe-empanado-trelica", ["pratos/bolinho-arroz", "pratos/batata-frita"], "mesa/drink-aperol"] },
-      { celulas: ["pratos/picanha", "pratos/baiao", "pratos/salada-quiche"] },
+      { celulas: ["pratos/tilapia-assada", "mesa/mesa-posta", "pratos/pastel"] },
+      { celulas: ["mesa/composicao-2", ["pratos/bolinho-arroz", "pratos/batata-frita"], "mesa/drink-aperol"] },
+      { celulas: ["pratos/peixe-empanado-trelica", ["pratos/baiao", "pratos/picanha"], "pratos/salada-quiche"] },
       { celulas: ["detalhes/mesa-alto"], sangria: true },
       { celulas: ["pratos/stinco", "pratos/berinjela", "pratos/medalhao"] },
       { celulas: ["pratos/prato-glaceado", "pratos/prato-ovos"] },
@@ -74,12 +73,11 @@ export const galeria: readonly GaleriaCapitulo[] = [
     id: "galeria-detalhes",
     titulo: "Detalhes",
     deck: "Matéria e memória.",
-    fundo: "nevoa",
     linhas: [
       { celulas: ["detalhes/trelica", "casa/vitrine"] },
       { celulas: ["detalhes/macrame-cactos", "detalhes/flores-secas", "detalhes/arte-parede"] },
-      { celulas: ["detalhes/cacto-neon", "detalhes/estante-livros", "detalhes/cortina"] },
       { celulas: ["detalhes/bar-secas"], sangria: true },
+      { celulas: ["detalhes/cacto-neon", "detalhes/estante-livros", "detalhes/cortina"] },
     ],
   },
 ];

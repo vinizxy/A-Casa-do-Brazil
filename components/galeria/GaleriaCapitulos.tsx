@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 
 type Props = {
-  capitulos: { id: string; titulo: string; total: number; fundo: "nevoa" | "creme" }[];
+  capitulos: { id: string; titulo: string; total: number }[];
 };
 
 // Índice dos capítulos que gruda sob a navbar enquanto a galeria está na tela.
-// Marca o capítulo atual e assume o fundo dele (névoa ou creme), para parecer
-// parte da página e não uma faixa por cima dela.
+// Marca o capítulo atual; o fundo é o mesmo da galeria, para parecer parte da
+// página e não uma faixa por cima dela.
 export default function GaleriaCapitulos({ capitulos }: Props) {
   const [ativo, setAtivo] = useState(capitulos[0]?.id);
 
@@ -38,12 +38,10 @@ export default function GaleriaCapitulos({ capitulos }: Props) {
     };
   }, [capitulos]);
 
-  const fundo = capitulos.find((c) => c.id === ativo)?.fundo === "creme" ? "bg-creme" : "bg-nevoa";
-
   return (
     <nav
       aria-label="Capítulos da galeria"
-      className={`hairline sticky top-[var(--nav-h)] z-30 border-b transition-colors duration-500 ${fundo}`}
+      className="hairline sticky top-[var(--nav-h)] z-30 border-b bg-nevoa"
     >
       <ul className="container-editorial flex h-12 items-center gap-7 sm:gap-10">
         {capitulos.map((c) => {

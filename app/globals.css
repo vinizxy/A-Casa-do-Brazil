@@ -303,19 +303,19 @@ body {
    altura e a linha fecha exatamente na largura, sem recorte nem vazio.
    --------------------------------------------------------------------------- */
 .galeria-capitulo {
-  --galeria-gap: 0.5rem;
+  --galeria-gap: 0.875rem;
   display: flex;
   flex-direction: column;
   gap: var(--galeria-gap);
 }
 @media (min-width: 40rem) {
   .galeria-capitulo {
-    --galeria-gap: 0.875rem;
+    --galeria-gap: 1.125rem;
   }
 }
 @media (min-width: 64rem) {
   .galeria-capitulo {
-    --galeria-gap: 1.125rem;
+    --galeria-gap: 1.5rem;
   }
 }
 .galeria-linha-interna {
