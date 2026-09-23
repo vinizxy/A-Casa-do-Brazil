@@ -1,4 +1,3 @@
-import Entra from "../Entra";
 import FotoBotao from "./FotoBotao";
 import GaleriaCapitulos from "./GaleriaCapitulos";
 import GaleriaProvider from "./GaleriaProvider";
@@ -49,34 +48,32 @@ function Linha({ linha }: { linha: GaleriaLinha }) {
   const [primeira] = linha.celulas;
   if (linha.sangria && typeof primeira === "string") {
     return (
-      <Entra>
-        <div className="galeria-sangria" style={cssVars({ "--ar": proporcao(primeira) })}>
-          <FotoBotao id={primeira} sizes="100vw" quality={85} />
-        </div>
-      </Entra>
+      <div className="galeria-sangria" style={cssVars({ "--ar": proporcao(primeira) })}>
+        <FotoBotao id={primeira} sizes="100vw" quality={85} />
+      </div>
     );
   }
   const soma = linha.celulas.reduce((acc, c) => acc + proporcao(c), 0);
   return (
     <div className="container-editorial">
-      <Entra>
-        <div
-          className="galeria-linha-interna"
-          data-abre={linha.celulas.length >= 3 ? "" : undefined}
-          style={cssVars({ "--soma": soma, "--n": linha.celulas.length })}
-        >
-          {linha.celulas.map((c, i) => (
-            <Celula key={typeof c === "string" ? c : c.join("+")} celula={c} sizes={sizesDaCelula(linha, i)} />
-          ))}
-        </div>
-      </Entra>
+      <div
+        className="galeria-linha-interna"
+        data-abre={linha.celulas.length >= 3 ? "" : undefined}
+        style={cssVars({ "--soma": soma, "--n": linha.celulas.length })}
+      >
+        {linha.celulas.map((c, i) => (
+          <Celula key={typeof c === "string" ? c : c.join("+")} celula={c} sizes={sizesDaCelula(linha, i)} />
+        ))}
+      </div>
     </div>
   );
 }
 
-// Galeria editorial: abertura com o total, um índice de capítulos que gruda
-// sob a navbar e três capítulos em linhas justificadas. Todas as imagens
-// abrem o lightbox (mouse, toque, teclado) e carregam sob demanda.
+// Galeria editorial: título, um índice de capítulos (com a contagem de cada
+// um) que gruda sob a navbar e três capítulos em linhas justificadas. As
+// fotos não têm entrada animada — numa galeria elas são o conteúdo e devem
+// estar lá quando a rolagem chega; o único movimento é a resposta ao hover.
+// Todas abrem o lightbox (mouse, toque, teclado) e carregam sob demanda.
 export default function Galeria() {
   const itens = fotosDaGaleria();
   const capitulos = galeria.map((c) => ({ id: c.id, titulo: c.titulo, total: fotosDoCapitulo(c).length }));
@@ -84,26 +81,28 @@ export default function Galeria() {
   return (
     <GaleriaProvider itens={itens}>
       <section id="galeria" aria-labelledby="galeria-titulo" className="scroll-mt-[var(--nav-h)] bg-nevoa">
-        <div className="container-editorial grid grid-cols-1 gap-y-6 pb-12 pt-20 sm:pt-28 lg:grid-cols-12 lg:items-end lg:gap-x-12 lg:pb-16 lg:pt-36">
-          <h2 id="galeria-titulo" className="display display-xl lg:col-span-7">
+        <div className="container-editorial pb-8 pt-20 sm:pt-28 lg:pb-12 lg:pt-36">
+          <h2 id="galeria-titulo" className="display display-xl">
             Galeria
           </h2>
-          <p className="max-w-[34ch] text-[1.0625rem] text-tinta-suave lg:col-span-4 lg:col-start-9 lg:pb-3">
-            {itens.length} fotografias em três capítulos: a casa, a mesa e os detalhes.
-          </p>
         </div>
 
         <GaleriaCapitulos capitulos={capitulos} />
 
         {/* Capítulos: muito respiro acima do divisor e pouco abaixo, para o
-            título pertencer às fotos que vêm depois dele. */}
+            título pertencer às fotos que vêm depois dele. O primeiro já está
+            separado pela borda do índice: respiro curto e sem segunda linha. */}
         <div className="pb-28 lg:pb-44">
-          {galeria.map((capitulo) => (
-            <div key={capitulo.id} className="pt-24 lg:pt-40">
+          {galeria.map((capitulo, i) => (
+            <div key={capitulo.id} className={i === 0 ? "pt-10 lg:pt-14" : "pt-24 lg:pt-40"}>
               {/* A âncora fica no divisor (não no respiro acima dele): o índice
                   leva direto ao título, logo abaixo da faixa fixa. */}
               <header id={capitulo.id} className="container-editorial mb-7 scroll-mt-16 lg:mb-10">
-                <div className="hairline flex flex-col gap-1.5 border-t pt-5 sm:flex-row sm:items-baseline sm:gap-6 lg:pt-6">
+                <div
+                  className={`flex flex-col gap-1.5 sm:flex-row sm:items-baseline sm:gap-6 ${
+                    i === 0 ? "" : "hairline border-t pt-5 lg:pt-6"
+                  }`}
+                >
                   <h3 className="display text-[1.875rem] lg:text-[2.5rem]">{capitulo.titulo}</h3>
                   <p className="text-[0.9375rem] text-tinta-suave">{capitulo.deck}</p>
                 </div>
