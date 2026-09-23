@@ -125,6 +125,9 @@ JOBS: dict[str, tuple[Path, int]] = {
     "pratos/prato-carnes": (wa("13.31.05"), 1280),
     "pratos/prato-glaceado": (wa("13.31.22 (1)"), 1280),
     "pratos/prato-ovos": (wa("13.31.22 (2)"), 1280),
+    # mesmo prato de "peixe-empanado", na luz da treliça
+    "pratos/peixe-empanado-trelica": (wa("13.31.08 (1)"), 1280),
+    "pratos/sobremesa-banana": (wa("13.31.07"), 1280),
     # diego
     "diego/retrato": (PRES / "page09_0_X4.jpg", 1400),
     "diego/cenografia-1": (PRES / "page10_0_X5.png", 864),

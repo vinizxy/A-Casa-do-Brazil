@@ -93,6 +93,8 @@ const alts: Record<FotoKey, string> = {
   "pratos/prato-carnes": "Prato com carnes, farofa e couve servido em louça artesanal",
   "pratos/prato-glaceado": "Carne glaceada com batatas rústicas e acompanhamento cremoso",
   "pratos/prato-ovos": "Prato com arroz e ovos, um cacto pequeno e sombras da treliça",
+  "pratos/peixe-empanado-trelica": "Filé de peixe empanado em iscas, com limão e molho da casa, sob as sombras da treliça",
+  "pratos/sobremesa-banana": "Sobremesa de banana com sorvete, pau de canela e farofa doce em prato oval",
   "diego/retrato": "Diego Silva, de camiseta preta, segurando um feixe de lápis coloridos com as duas mãos",
   "diego/cenografia-1": "Cenografia de evento assinada por Diego Silva, com plantas, luzes e mesas",
   "diego/cenografia-2": "Cenografia de evento com luminárias suspensas e flores secas",

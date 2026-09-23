@@ -14,8 +14,11 @@
 // No celular, linhas com três ou mais células abrem a primeira em largura
 // total e justificam as demais abaixo.
 //
-// Curadoria: 33 fotos. Ficam de fora as que já aparecem em outras seções da
-// home (composição 1, queijo coalho, cactos no espelho) e as quase repetidas.
+// Curadoria: 40 fotos. Ficam de fora as que já aparecem em outras seções da
+// home (queijo coalho, cactos no espelho, pratos-parede no mapa), as quase
+// repetidas e as do mesmo prato de outro ângulo: prato-carnes (= picadinho da
+// Gastronomia), sobremesa-coco (= cocada-coco), peixe-empanado (a versão da
+// treliça entrou no lugar), composição 1 e mini-chef (mais um prato com fritas).
 // ---------------------------------------------------------------------------
 
 import { foto, type FotoKey } from "./fotos";
@@ -55,12 +58,16 @@ export const galeria: readonly GaleriaCapitulo[] = [
     titulo: "À mesa",
     deck: "Pratos, drinks e sobremesas.",
     fundo: "creme",
+    // A refeição em ordem: a mesa, petiscos e drink, pratos principais,
+    // sobremesas. Nenhum prato repete (nem com a faixa da seção Gastronomia).
     linhas: [
       { celulas: ["mesa/composicao-2", ["pratos/tilapia-assada", "pratos/pastel"], "mesa/mesa-posta"] },
-      { celulas: ["pratos/picanha", "pratos/bolinho-arroz", "pratos/baiao"] },
+      { celulas: ["pratos/peixe-empanado-trelica", ["pratos/bolinho-arroz", "pratos/batata-frita"], "mesa/drink-aperol"] },
+      { celulas: ["pratos/picanha", "pratos/baiao", "pratos/salada-quiche"] },
       { celulas: ["detalhes/mesa-alto"], sangria: true },
-      { celulas: ["mesa/drink-aperol", "pratos/medalhao", "pratos/prato-ovos"] },
-      { celulas: ["pratos/bolo-chocolate", "pratos/cocada-coco", "pratos/sobremesa-caramelo"] },
+      { celulas: ["pratos/stinco", "pratos/berinjela", "pratos/medalhao"] },
+      { celulas: ["pratos/prato-glaceado", "pratos/prato-ovos"] },
+      { celulas: ["pratos/sobremesa-banana", ["pratos/bolo-chocolate", "pratos/cocada-coco"], "pratos/sobremesa-caramelo"] },
     ],
   },
   {
